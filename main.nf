@@ -22,12 +22,16 @@ if (params.help) {
 validateParameters()
 log.info paramsSummaryLog(workflow)
 
+include { PARSE_SEQ_DIR_UNSPRING } from './modules/subworkflows/parse_seq_dir_unspring/main.nf'
+include { KALLISTO_QUANT } from './modules/process/kallisto/quant/main.nf'
+
 workflow {
+  print "params.input_dir: " + params.input_dir
+  inputDir = Channel.fromPath(params.input_dir, type:'dir', checkIfExists: true)
+  inputDir.view { "inputDir channel: ${it}" }
 
-/*
-Define workflow here
-To access to a parameter (default or mandatory) call param.name_param
-*/
-
-
+  reads = PARSE_SEQ_DIR_UNSPRING(inputDir)
+  reads.view { "raw reads channel: ${it}" }
+  kallisto_idx = Channel.fromPath(params.kallisto_idx, type:'file', checkIfExists: true)
+  KALLISTO_QUANT(reads, kallisto_idx.first())
 }
