@@ -26,12 +26,11 @@ include { PARSE_SEQ_DIR_UNSPRING } from './modules/subworkflows/parse_seq_dir_un
 include { KALLISTO_QUANT } from './modules/process/kallisto/quant/main.nf'
 
 workflow {
-  print "params.input_dir: " + params.input_dir
+  // formatted reads channels
   inputDir = Channel.fromPath(params.input_dir, type:'dir', checkIfExists: true)
-  inputDir.view { "inputDir channel: ${it}" }
-
   reads = PARSE_SEQ_DIR_UNSPRING(inputDir)
-  reads.view { "raw reads channel: ${it}" }
+
+  // kallisto quant
   kallisto_idx = Channel.fromPath(params.kallisto_idx, type:'file', checkIfExists: true)
   KALLISTO_QUANT(reads, kallisto_idx.first())
 }
