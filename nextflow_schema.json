@@ -1,0 +1,59 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/nexomis/DE-Preprocessing/master/nextflow_schema.json",
+    "title": "nexomis/DE-Preprocessing pipeline parameters",
+    "description": "Estimate the expression level of features (genes or transcripts) and perform the associated QC. Starting from cleaned reads and one pre-built reference database in standard format (cf. Readme.md).",
+    "type": "object",
+    "definitions": {
+        "input_output_options": {
+            "title": "Input/output options",
+            "type": "object",
+            "description": "Define where the pipeline should find input data and save output data.",
+            "required": ["out_dir"],
+            "properties": {
+                "out_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The output directory where the results will be saved.",
+                    "default": "out_dir"
+                },
+                "publish_dir_mode": {
+                    "type": "string",
+                    "description": "PublishDir mode for process",
+                    "default": "link"
+                }
+            }
+        },
+        "resources_options": {
+            "title": "Resources options",
+            "type": "object",
+            "description": "Define The default resources for nextflow",
+            "required": ["input_dir", "output_dir"],
+            "properties": {
+                "ncpus_low": {
+                    "type": "integer",
+                    "default": 4,
+                    "description": "Number of cpu for low process."
+                },
+                "ncpus_med": {
+                    "type": "integer",
+                    "default": 8,
+                    "description": "Number of cpu for medium process."
+                },
+                "ncpus_high": {
+                    "type": "integer",
+                    "default": 16,
+                    "description": "Number of cpu for high process."
+                }
+            }
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/resources_options"
+        }
+    ]
+}

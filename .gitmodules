@@ -1,0 +1,9 @@
+[submodule "modules/subworkflows"]
+	path = modules/subworkflows
+	url = https://github.com/nexomis/nf-subworkflows.git
+[submodule "modules/config"]
+	path = modules/config
+	url = https://github.com/nexomis/nf-config.git
+[submodule "modules/process"]
+	path = modules/process
+	url = https://github.com/nexomis/nf-process.git
