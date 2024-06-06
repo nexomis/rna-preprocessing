@@ -27,12 +27,13 @@ include { KALLISTO_QUANT } from './modules/process/kallisto/quant/main.nf'
 
 workflow {
 
+  println "Reads orientation: ${params.reads_orientation}"
+
   // formatted reads channels
   inputDir = Channel.fromPath(params.input_dir, type:'dir', checkIfExists: true)
   reads = PARSE_SEQ_DIR_UNSPRING(inputDir)
 
   // kallisto quant
   kallisto_idx = Channel.fromPath(params.kallisto_idx, type:'file', checkIfExists: true)
-  reads_orientation_ch = Channel.value(params.reads_orientation)
-  KALLISTO_QUANT(reads, kallisto_idx.first(), reads_orientation_ch)
+  KALLISTO_QUANT(reads, kallisto_idx.first())
 }

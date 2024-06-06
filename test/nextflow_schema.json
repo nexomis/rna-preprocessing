@@ -24,6 +24,12 @@
                     "description": "The output directory where the results will be saved (must not already exist).",
                     "default": "out_dir"
                 },
+                "reads_orientation": {
+                    "type": "string",
+                    "enum": ["unstranded", "fr-stranded", "rf-stranded"],
+                    "default": "unstranded",
+                    "description": "Reads orientation."
+                },
                 "publish_dir_mode": {
                     "type": "string",
                     "description": "PublishDir mode for process",
@@ -42,12 +48,6 @@
                     "format": "file",
                     "exists": true,
                     "description": "The file containing the kallisto transcriptome index in standard format (output of 'kallisto index'). [Required]"
-                },
-                "reads_orientation": {
-                    "type": "string",
-                    "enum": ["unstranded", "fr-stranded", "rf-stranded"],
-                    "default": "unstranded",
-                    "description": "Reads orientation."
                 },
                 "kallisto_quant_other": {
                     "type": "string",
@@ -79,8 +79,11 @@
         }
     },
     "allOf": [
-        { "$ref": "#/definitions/input_output_options" },
-        { "$ref": "#/definitions/kallisto_quant" },
-        { "$ref": "#/definitions/resources_options" }
+        {
+            "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/resources_options"
+        }
     ]
 }
