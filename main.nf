@@ -22,17 +22,15 @@ if (params.help) {
 validateParameters()
 log.info paramsSummaryLog(workflow)
 
-include { PARSE_SEQ_DIR_UNSPRING } from './modules/subworkflows/parse_seq_dir_unspring/main.nf'
-include { KALLISTO_QUANT } from './modules/process/kallisto/quant/main.nf'
+include { RNA_ALIGN_KALLISTO } from './modules/subworkflows/rna_align_kallisto/main.nf'
 
 workflow {
 
   // formatted reads channels
   inputDir = Channel.fromPath(params.input_dir, type:'dir', checkIfExists: true)
-  reads = PARSE_SEQ_DIR_UNSPRING(inputDir)
+  kallistoIdx = Channel.fromPath(params.kallisto_idx, type:'file', checkIfExists: true) | first()  // check convention: in tuple with 'name' at first position ?
+  readsOrientation = Channel.value(params.reads_orientation)
 
-  // kallisto quant
-  kallisto_idx = Channel.fromPath(params.kallisto_idx, type:'file', checkIfExists: true)
-  reads_orientation_ch = Channel.value(params.reads_orientation)
-  KALLISTO_QUANT(reads, kallisto_idx.first(), reads_orientation_ch)
+  // execution
+  RNA_ALIGN_KALLISTO(inputDir, kallistoIdx, readsOrientation)
 }
