@@ -1,0 +1,10 @@
+module_order:
+  - kallisto:
+      name: 'Kallisto'
+      anchor: "kallisto"
+      info: "This section of the report shows kallisto quantification results."
+      path_filters:
+        - 'kallisto_logs/*.log'
+skip_versions_section: true
+use_filename_as_sample_name:
+  - kallisto

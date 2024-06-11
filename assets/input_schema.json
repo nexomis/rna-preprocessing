@@ -1,0 +1,65 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/nexomis/rna-preprocessing/main/assets/schema_input.json",
+    "title": "nexomis/rna-preprocessing pipeline - params.input schema",
+    "description": "Sample Sheet input for mRNA-Seq Data",
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "sample_name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_]+$",
+          "errorMessage": "Sample name must contains only alphanumeric chars or underscore"
+        },
+        "path_r1": {
+          "type": "string",
+          "pattern": "^\\S+\\.(fastq|fq|spring)(\\.)?(gz|z|bz|bzip2)?$",
+          "format": "file-path",
+          "errorMessage": "Path for R1 must be provided, cannot contain spaces and must end with .fastq, .fq, .spring optionally followed by .gz"
+        },
+        "path_r2": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\S+\\.(fastq|fq|spring)(\\.gz)?$",
+              "format": "file-path",
+              "errorMessage": "Path for R2, if provided, cannot contain spaces and must end with .fastq, .fq, .spring optionally followed by .gz"
+            },
+            {
+              "type": "string",
+              "maxLength": 0
+            }
+          ],
+          "default": ""
+        },
+        "strand": {
+          "type": "string",
+          "enum": ["", "unstranded", "fr-stranded", "rf-stranded"],
+          "default" : "unstranded",
+          "errorMessage": "Strand information must be provided and be one of '' same as 'unstranded', 'fr-stranded', 'rf-stranded'"
+        },
+        "is_3prime": {
+          "type": "boolean",
+          "default" : false,
+          "errorMessage": "If 3 prime, some "
+        },
+        "frag_size": {
+          "type": "number",
+          "default" : -1,
+          "errorMessage": "Mean fragment size"
+        },
+        "frag_size_sd": {
+          "type": "number",
+          "default" : -1,
+          "errorMessage": "Standard deviation of fragment size"
+        },
+        "force_kallisto_single_overhang": {
+          "type": "boolean",
+          "default" : true,
+          "errorMessage": "If true, force kallisto to use single overhang"
+        }
+      },
+      "required": ["sample_name", "path_r1"]
+    }
+  }
