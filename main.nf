@@ -11,18 +11,20 @@ log.info """
     |            #                                               #
     |            #################################################
     |
-    | DE-Preprocessing: Estimate the expression level of features (genes or transcripts) and perform the associated QC. Starting from cleaned reads and one pre-built reference database in standard format (cf. Readme.md).
+    | rna-preprocessing: Estimate the expression level of features (genes or transcripts) and perform the associated QC. Starting from cleaned reads and one pre-built reference database in standard format (cf. Readme.md).
     | 
     |""".stripMargin()
 
 if (params.help) {
-  log.info paramsHelp("nextflow run nexomis/DE-Preprocessing --input_dir </path/to/dir/contains/fastq> --kallisto_idx </path/to/kallisto/txome/file.index> [args]")
+  log.info paramsHelp("nextflow run nexomis/rna-preprocessing --input </path/to/samplesheet> --kallisto_idx </path/to/kallisto/txome/file.index> [args]")
   exit 0
 }
 
 validateParameters()
 
 log.info paramsSummaryLog(workflow)
+
+file(params.out_dir + "/nextflow").mkdirs()
 
 def parse_sample_entry(it) {
   def meta = ["id": it[0], "strand": it[3], "is_3prime": it[4],
@@ -139,7 +141,7 @@ workflow {
     if ( params.kraken2_db == null ) {
       error "kraken2_db argument required for primary analysis"
     }
-    Channel.fromPath(params.kraken2_db, type: "dir")
+    Channel.fromPath(params.kraken2_db, type: "dir", checkIfExists: true)
     | collect
     | set {dbPathKraken2}
     
@@ -149,6 +151,7 @@ workflow {
   }
   // END PRIMARY
 
+  // START KALLISTO
   trimmedInputs
   | map {
     it[0].kallisto_args = make_kallisto_args(it[0])
@@ -160,13 +163,13 @@ workflow {
   
   KALLISTO_QUANT(inputsForKallisto, kallistoIndex)
 
-  Channel.fromPath("./files/align_multiqc.yml")
-  | set {multiqcYml}
+  multiqcYml = Channel.fromPath("./files/align_multiqc.yml")
 
   KALLISTO_QUANT.out.log
   | map {it[1]}
   | collect
   | set {kallistoLogs}
+  // END KALLISTO
 
   ALIGN_MULTIQC(
     kallistoLogs,

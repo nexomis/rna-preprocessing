@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/nexomis/DE-Preprocessing/master/nextflow_schema.json",
-    "title": "nexomis/DE-Preprocessing pipeline parameters",
+    "title": "nexomis/rna-preprocessing pipeline parameters",
     "description": "Estimate the expression level of features (genes or transcripts) and perform the associated QC. Starting from cleaned reads and one pre-built reference database in standard format (cf. Readme.md).",
     "type": "object",
     "definitions": {

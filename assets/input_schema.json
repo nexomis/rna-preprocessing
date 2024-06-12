@@ -22,9 +22,9 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^\\S+\\.(fastq|fq|spring)(\\.gz)?$",
+              "pattern": "^\\S+\\.(fastq|fq|spring)(\\.)?(gz|z|bz|bzip2)?$",
               "format": "file-path",
-              "errorMessage": "Path for R2, if provided, cannot contain spaces and must end with .fastq, .fq, .spring optionally followed by .gz"
+              "errorMessage": "Path for R2, if provided, cannot contain spaces and must end with .fastq, .fq optionally followed by .gz"
             },
             {
               "type": "string",
@@ -42,7 +42,7 @@
         "is_3prime": {
           "type": "boolean",
           "default" : false,
-          "errorMessage": "If 3 prime, some "
+          "errorMessage": "Whether the sample has been sequenced using 3 prime library."
         },
         "frag_size": {
           "type": "number",
