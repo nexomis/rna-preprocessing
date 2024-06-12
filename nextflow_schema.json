@@ -137,6 +137,11 @@
                     "type": "integer",
                     "default": 16,
                     "description": "Number of cpu for high process."
+                },
+                "kraken2_memory": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "Amount of memory in GB for Kraken2, default is 12 GB"
                 }
             }
         }
