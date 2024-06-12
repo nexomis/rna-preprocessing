@@ -3,3 +3,5 @@
 /data/test/out_dir
 /out_dir
 /.nextflow
+/data/test/ggal
+/data/test/k2*

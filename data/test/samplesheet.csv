@@ -1,0 +1,4 @@
+path_r1,path_r2,sample_name,strand
+data/test/ggal/gut_1.fq.gz,data/test/ggal/gut_2.fq.gz,gut,fr-stranded
+data/test/ggal/lung_2.fq,,lung,rf-stranded
+data/test/ggal/liver.spring,,liver,

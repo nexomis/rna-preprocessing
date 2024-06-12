@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/nexomis/DE-Preprocessing/master/nextflow_schema.json",
-    "title": "nexomis/DE-Preprocessing pipeline parameters",
+    "title": "nexomis/rna-preprocessing pipeline parameters",
     "description": "Estimate the expression level of features (genes or transcripts) and perform the associated QC. Starting from cleaned reads and one pre-built reference database in standard format (cf. Readme.md).",
     "type": "object",
     "definitions": {
@@ -9,13 +9,25 @@
             "title": "Input/output options",
             "type": "object",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input_dir", "out_dir"],
+            "required": ["input", "out_dir"],
             "properties": {
-                "input_dir": {
+                "input": {
                     "type": "string",
-                    "format": "directory-path",
-                    "exists": true, 
-                    "description": "The input directory with sequence files. Spring files will be decompressed. If given, sample_sheet is ignored. [Required]"
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "schema": "assets/input_schema.json",
+                    "description": "Path to comma-separated file containing information about the samples you would like to analyse."
+                },
+                "save_fastp": {
+                    "type": "boolean",
+                    "description": "Save fastp trimmed fastq.",
+                    "default": false
+                },
+                "skip_primary": {
+                    "type": "boolean",
+                    "description": "Skip primary analysis",
+                    "default": false
                 },
                 "out_dir": {
                     "type": "string",
@@ -31,6 +43,67 @@
                 }
             }
         },
+        "fastp_options": {
+            "title": "fastp options for Primary analysis",
+            "type": "object",
+            "description": "Options for the fastp software.",
+            "properties": {
+                "trim_poly_g": {
+                    "type": "boolean",
+                    "description": "Enable polyG tail trimming.",
+                    "default": true
+                },
+                "trim_poly_x": {
+                    "type": "boolean",
+                    "description": "Enable polyX tail trimming.",
+                    "default": true
+                },
+                "min_avg_qual": {
+                    "type": "integer",
+                    "description": "Minimum average quality to keep a read.",
+                    "default": 28
+                },
+                "min_len": {
+                    "type": "integer",
+                    "description": "Minimum length to keep a read.",
+                    "default": 41
+                },
+                "cut_right_window_size": {
+                    "type": "integer",
+                    "description": "The window size for sliding window trimming on the right.",
+                    "default": 4
+                },
+                "cut_right_mean_qual": {
+                    "type": "integer",
+                    "description": "The mean quality requirement for sliding window trimming on the right.",
+                    "default": 20
+                },
+                "cut_tail_window_size": {
+                    "type": "integer",
+                    "description": "The window size for sliding window trimming on the tail.",
+                    "default": 4
+                },
+                "cut_tail_mean_qual": {
+                    "type": "integer",
+                    "description": "The mean quality requirement for sliding window trimming on the tail.",
+                    "default": 25
+                }
+            }
+        },
+        "kraken2_options": {
+            "title": "Kraken2 options for Primary analysis",
+            "type": "object",
+            "description": "Options for Kraken2",
+            "required": ["kraken2_db"],
+            "properties": {
+                "kraken2_db": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "exists": true, 
+                    "description": "Kraken2 index as a directory"
+                }
+            }
+        },
         "kallisto_quant": {
             "title": "Kallisto: quant",
             "type": "object",
@@ -42,16 +115,6 @@
                     "format": "file",
                     "exists": true,
                     "description": "The file containing the kallisto transcriptome index in standard format (output of 'kallisto index'). [Required]"
-                },
-                "reads_orientation": {
-                    "type": "string",
-                    "enum": ["unstranded", "fr-stranded", "rf-stranded"],
-                    "default": "unstranded",
-                    "description": "Reads orientation."
-                },
-                "kallisto_quant_other": {
-                    "type": "string",
-                    "description": "Additional parameters of kallisto. Be careful, the redundancy of arguments between those entered here and those entered as direct worflow arguments is not controlled and can therefore lead to bad behavior. "
                 }
             }
         },
