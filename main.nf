@@ -163,7 +163,7 @@ workflow {
   
   KALLISTO_QUANT(inputsForKallisto, kallistoIndex)
 
-  multiqcYml = Channel.fromPath("./files/align_multiqc.yml")
+  multiqcYml = Channel.fromPath(projectDir + "/files/align_multiqc.yml")
 
   KALLISTO_QUANT.out.log
   | map {it[1]}

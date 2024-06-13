@@ -103,7 +103,7 @@
                 },
                 "num_reads_sample_qc": {
                     "type": "integer",
-                    "default": 100000,
+                    "default": 500000,
                     "description": "Number of reads to subsample before kraken2 and fastqc"
                 }
             }
