@@ -3,8 +3,8 @@ mv tmp/nf-training/data/ggal .
 rm -rf tmp/
 gzip ggal/gut_*
 apptainer run docker://ghcr.io/nexomis/spring:1.1.1 spring -c -i ggal/liver_1.fq ggal/liver_2.fq --no-ids -q ill_bin -o ggal/liver.spring
-rm liver*fq
-rm lung_1.fq
+rm ggal/liver*fq
+rm ggal/lung_1.fq
 
 apptainer run docker://quay.io/biocontainers/kallisto:0.50.1--h6de1650_2 kallisto index -t 4 --index ggal/kallisto.idx ggal/transcriptome.fa
 
