@@ -5,3 +5,5 @@
 /.nextflow
 /data/test/ggal
 /data/test/k2*
+data/test/out
+/null

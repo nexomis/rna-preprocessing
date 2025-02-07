@@ -35,11 +35,6 @@
                     "exists": false,
                     "description": "The output directory where the results will be saved (must not already exist).",
                     "default": "out_dir"
-                },
-                "publish_dir_mode": {
-                    "type": "string",
-                    "description": "PublishDir mode for process",
-                    "default": "link"
                 }
             }
         },
@@ -105,6 +100,12 @@
                     "type": "integer",
                     "default": 500000,
                     "description": "Number of reads to subsample before kraken2 and fastqc"
+                }, 
+                "tax_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to a custom taxonomy directory for recentrifuge.",
+                    "default": "${projectDir}/modules/subworkflows/primary/taxdump_26092024"
                 }
             }
         },
@@ -142,6 +143,21 @@
                     "default": 16,
                     "description": "Number of cpu for high process."
                 },
+                "mem_low": {
+                    "type": "integer",
+                    "default": 15,
+                    "description": "Amount of memory in GB for low process, default is 10 GB"
+                },
+                "mem_med": {
+                    "type": "integer",
+                    "default": 30,
+                    "description": "Amount of memory in GB for medium process, default is 20 GB"
+                },
+                "mem_high": {
+                    "type": "integer",
+                    "default": 60,
+                    "description": "Amount of memory in GB for high process, default is 40 GB"
+                },
                 "kraken2_memory": {
                     "type": "integer",
                     "default": 10,
@@ -153,6 +169,8 @@
     "allOf": [
         { "$ref": "#/definitions/input_output_options" },
         { "$ref": "#/definitions/kallisto_quant" },
-        { "$ref": "#/definitions/resources_options" }
+        { "$ref": "#/definitions/resources_options" },
+        { "$ref": "#/definitions/fastp_options" },
+        { "$ref": "#/definitions/primary_opts" }
     ]
 }

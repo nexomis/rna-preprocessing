@@ -14,7 +14,7 @@
         },
         "path_r1": {
           "type": "string",
-          "pattern": "^\\S+\\.(fastq|fq|spring)(\\.)?(gz|z|bz|bzip2)?$",
+          "pattern": "^\\S+\\.(fastq|fq|sfq)(\\.)?(gz|z|bz|bzip2)?$",
           "format": "file-path",
           "errorMessage": "Path for R1 must be provided, cannot contain spaces and must end with .fastq, .fq, .spring optionally followed by .gz"
         },
@@ -22,7 +22,7 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^\\S+\\.(fastq|fq|spring)(\\.)?(gz|z|bz|bzip2)?$",
+              "pattern": "^\\S+\\.(fastq|fq|sfq)(\\.)?(gz|z|bz|bzip2)?$",
               "format": "file-path",
               "errorMessage": "Path for R2, if provided, cannot contain spaces and must end with .fastq, .fq optionally followed by .gz"
             },
@@ -53,11 +53,6 @@
           "type": "number",
           "default" : -1,
           "errorMessage": "Standard deviation of fragment size"
-        },
-        "force_kallisto_single_overhang": {
-          "type": "boolean",
-          "default" : true,
-          "errorMessage": "If true, force kallisto to use single overhang"
         }
       },
       "required": ["sample_name", "path_r1"]
