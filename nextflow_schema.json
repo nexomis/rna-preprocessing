@@ -17,7 +17,7 @@
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "schema": "assets/input_schema.json",
-                    "description": "Path to comma-separated file containing information about the samples you would like to analyse."
+                    "description": "Path to comma-separated file containing information about the samples you would like to analyse.  kallisto_idx is required in the input schema"
                 },
                 "save_fastp": {
                     "type": "boolean",
@@ -117,7 +117,10 @@
             "properties": {
                 "kallisto_idx": {
                     "type": "string",
-                    "format": "file",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "schema": "assets/kallisto_index_schema.json",
                     "exists": true,
                     "description": "The file containing the kallisto transcriptome index in standard format (output of 'kallisto index'). [Required]"
                 }

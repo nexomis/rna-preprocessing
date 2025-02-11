@@ -1,4 +1,5 @@
-path_r1,path_r2,sample_name,strand,is_3prime
-data/test/ggal/gut_1.fq.gz,data/test/ggal/gut_2.fq.gz,gut,fr-stranded,false
-data/test/ggal/lung_2.fq,,lung,rf-stranded,true
-data/test/ggal/liver_1.sfq,data/test/ggal/liver_2.sfq,liver,fr-stranded,false
+path_r1,path_r2,kallisto_idx,sample_name,strand,is_3prime
+data/test/WT_1.fq.gz,data/test/WT_2.fq.gz,kallisto_index_1,WT_fq,fr-stranded,false
+data/test/WT_2.sfq,data/test/WT_1.sfq,kallisto_index_1,WT_sfq,rf-stranded,false
+data/test/WT_1.fq.gz,,kallisto_index_2,WT_3p,fr-stranded,true
+data/test/MUT_1.fq.gz,data/test/MUT_2.fq.gz,kallisto_index_3,MUT_fq,fr-stranded,false

@@ -7,3 +7,8 @@
 /data/test/k2*
 data/test/out
 /null
+/data/test/*fq*
+/data/test/*fa*
+/data/test/*fna*
+/data/test/idx
+

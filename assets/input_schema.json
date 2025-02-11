@@ -33,6 +33,11 @@
           ],
           "default": ""
         },
+        "kallisto_idx": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_]+$",
+          "errorMessage": "Kallisto index ID must contains only alphanumeric chars or underscore"
+        },
         "strand": {
           "type": "string",
           "enum": ["", "unstranded", "fr-stranded", "rf-stranded"],

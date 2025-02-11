@@ -1,0 +1,5 @@
+input: data/test/samplesheet.csv
+out_dir: data/test/out
+kallisto_idx: data/test/kallisto_index.csv
+min_len: 31
+kraken2_db: data/test/k2_minusb_20240112

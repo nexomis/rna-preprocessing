@@ -9,6 +9,7 @@ log.info """
     |            #   | .` | / -_) \\ \\ / / _ \\ | '  \\  | | (_-<   #
     |            #   |_|\\_| \\___| /_\\_\\ \\___/ |_|_|_| |_| /__/   #
     |            #                                               #
+    |            #################################################
     |
     | rna-preprocessing: Estimate the expression level of features (genes or transcripts) and perform the associated QC. Starting from cleaned reads and one pre-built reference database in standard format (cf. Readme.md).
     | 
@@ -36,10 +37,27 @@ def parse_sample_entry(it) {
   if (r1_file.toString().toLowerCase().endsWith("sfq")) {
     type = "sfq"
   }
-  def meta = ["id": it[0], "strand": it[3], "is_3prime": it[4],
-      "frag_size": it[5],"frag_size_sd": it[6], "read_type": type
+  def meta = ["id": it[0], "kallisto_idx": it[3],
+      "strand": it[4], "is_3prime": it[5],
+      "frag_size": it[6],"frag_size_sd": it[7], "read_type": type
     ]
   return [meta, files]
+}
+
+def parse_kallisto_idx(it) {
+  def is_index = false
+  def is_fasta = false
+  def ref_file
+  if (it[1] && !it[1].isEmpty()) {
+    ref_file = file(it[1], checkIfExists: true)
+    is_index = true
+  } else if (it[2] && !it[2].isEmpty()) {
+    ref_file = file(it[2], checkIfExists: true)
+    is_fasta = true
+  }
+
+  def meta = ["id": it[0], "is_index": is_index, "is_fasta": is_fasta]
+  return [meta, ref_file]
 }
 
 def make_kallisto_args(meta) {
@@ -80,6 +98,7 @@ def make_kallisto_args(meta) {
 
 include { PRIMARY } from './modules/subworkflows/primary/main.nf'
 include { RNA_PREPROCESSING } from './modules/subworkflows/rna_preprocessing/main.nf'
+include { KALLISTO_INDEX } from './modules/process/kallisto/index/main.nf'
 
 workflow {
   // START PARSING SAMPLE SHEET
@@ -119,14 +138,26 @@ workflow {
   }
   | set { inputsForKallisto }
 
-  Channel.fromPath(params.kallisto_idx, checkIfExists: true)
-    | map {[["id": "kallistoIdx"], it]}
-  | collect
+  Channel.fromSamplesheet("kallisto_idx")
+  | map {
+      return parse_kallisto_idx(it)
+    }
   | set { kallistoIndex }
+
+  kallistoIndex
+  | branch {
+    build: it[0].is_fasta
+    existing: it[0].is_index
+  }
+  | set { kallistoIndexBranched }
+
+  KALLISTO_INDEX(kallistoIndexBranched.build)
+  
+  kallistoIndexFinal = KALLISTO_INDEX.out.idx.concat(kallistoIndexBranched.existing)
 
   multiqcYml = Channel.fromPath(projectDir + "/files/align_multiqc.yml")
 
-  RNA_PREPROCESSING(inputsForKallisto, kallistoIndex, multiqcYml)
+  RNA_PREPROCESSING(inputsForKallisto, kallistoIndexFinal, multiqcYml)
 
   publish:
   PRIMARY.out.trimmed                         >> 'trimmed_and_filtered'
