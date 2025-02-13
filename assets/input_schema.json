@@ -33,33 +33,33 @@
           ],
           "default": ""
         },
-        "kallisto_idx": {
+        "reference": {
           "type": "string",
           "pattern": "^[a-zA-Z0-9_]+$",
-          "errorMessage": "Kallisto index ID must contains only alphanumeric chars or underscore"
+          "errorMessage": "Reference ID must contains only alphanumeric chars or underscore"
         },
         "strand": {
           "type": "string",
           "enum": ["", "unstranded", "fr-stranded", "rf-stranded"],
-          "default" : "unstranded",
-          "errorMessage": "Strand information must be provided and be one of '' same as 'unstranded', 'fr-stranded', 'rf-stranded'"
+          "default": "unstranded",
+          "errorMessage": "Strand information must be provided and be one of '' same as 'unstranded', 'fr-stranded', 'rf-stranded'. Note that every thing is considered inward."
         },
         "is_3prime": {
           "type": "boolean",
-          "default" : false,
+          "default": false,
           "errorMessage": "Whether the sample has been sequenced using 3 prime library."
         },
         "frag_size": {
           "type": "number",
-          "default" : -1,
+          "default": -1,
           "errorMessage": "Mean fragment size"
         },
         "frag_size_sd": {
           "type": "number",
-          "default" : -1,
+          "default": -1,
           "errorMessage": "Standard deviation of fragment size"
         }
       },
-      "required": ["sample_name", "path_r1"]
+      "required": ["sample_name", "path_r1", "reference"]
     }
-  }
+}

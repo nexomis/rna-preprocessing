@@ -17,7 +17,7 @@
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "schema": "assets/input_schema.json",
-                    "description": "Path to comma-separated file containing information about the samples you would like to analyse.  kallisto_idx is required in the input schema"
+                    "description": "Path to comma-separated file containing information about the samples you would like to analyse. Reference ID is required in the input schema"
                 },
                 "save_fastp": {
                     "type": "boolean",
@@ -109,20 +109,20 @@
                 }
             }
         },
-        "kallisto_quant": {
-            "title": "Kallisto: quant",
+        "quantification": {
+            "title": "RNA Quantification",
             "type": "object",
-            "description": "Options for the quantification tools of kallisto software (`kallisto quant`).",
-            "required": ["kallisto_idx"],
+            "description": "Options for RNA quantification (kallisto or salmon).",
+            "required": ["reference"],
             "properties": {
-                "kallisto_idx": {
+                "reference": {
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
-                    "schema": "assets/kallisto_index_schema.json",
+                    "schema": "assets/reference_schema.json",
                     "exists": true,
-                    "description": "The file containing the kallisto transcriptome index in standard format (output of 'kallisto index'). [Required]"
+                    "description": "The file containing the reference information (index or fasta) for kallisto or salmon in standard format. [Required]"
                 }
             }
         },
@@ -171,7 +171,7 @@
     },
     "allOf": [
         { "$ref": "#/definitions/input_output_options" },
-        { "$ref": "#/definitions/kallisto_quant" },
+        { "$ref": "#/definitions/quantification" },
         { "$ref": "#/definitions/resources_options" },
         { "$ref": "#/definitions/fastp_options" },
         { "$ref": "#/definitions/primary_opts" }

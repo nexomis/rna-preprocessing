@@ -1,5 +1,6 @@
-path_r1,path_r2,kallisto_idx,sample_name,strand,is_3prime
-data/test/WT_1.fq.gz,data/test/WT_2.fq.gz,kallisto_index_1,WT_fq,fr-stranded,false
-data/test/WT_2.sfq,data/test/WT_1.sfq,kallisto_index_1,WT_sfq,rf-stranded,false
-data/test/WT_1.fq.gz,,kallisto_index_2,WT_3p,fr-stranded,true
-data/test/MUT_1.fq.gz,data/test/MUT_2.fq.gz,kallisto_index_3,MUT_fq,fr-stranded,false
+sample_name,path_r1,path_r2,reference,strand,is_3prime,frag_size,frag_size_sd
+WT_fq,data/test/WT_1.fq.gz,data/test/WT_2.fq.gz,kallisto_index_1,fr-stranded,false,-1,-1
+WT_sfq,data/test/WT_2.sfq,data/test/WT_1.sfq,kallisto_index_1,rf-stranded,false,-1,-1
+WT_3p,data/test/WT_1.fq.gz,,kallisto_index_2,fr-stranded,true,250,50
+MUT_fq,data/test/MUT_1.fq.gz,data/test/MUT_2.fq.gz,kallisto_index_3,fr-stranded,false,-1,-1
+WT_salmon,data/test/WT_1.fq.gz,data/test/WT_2.fq.gz,salmon_index_2,fr-stranded,false,-1,-1

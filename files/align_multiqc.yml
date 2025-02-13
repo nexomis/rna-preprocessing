@@ -5,6 +5,24 @@ module_order:
       info: "This section of the report shows kallisto quantification results."
       path_filters:
         - 'kallisto_logs/*.log'
+  - salmon:
+      name: 'Salmon'
+      anchor: "salmon"
+      info: "This section of the report shows salmon quantification results."
+      path_filters:
+        - 'salmon_logs/*'
+        - 'salmon_logs/aux_info/*'
 skip_versions_section: true
 use_filename_as_sample_name:
   - kallisto
+  - salmon/meta
+  - salmon/fld
+  - salmon/lfc
+
+sp:
+  salmon/meta:
+    fn: "*.meta_info.json"
+  salmon/fld:
+    fn: "*.flenDist.txt"
+  salmon/lfc:
+    fn: "*.lib_format_counts.json"

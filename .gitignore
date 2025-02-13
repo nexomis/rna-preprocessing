@@ -10,5 +10,5 @@ data/test/out
 /data/test/*fq*
 /data/test/*fa*
 /data/test/*fna*
+/data/test/test.idx
 /data/test/idx
-

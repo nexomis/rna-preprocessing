@@ -1,0 +1,5 @@
+id,method,index,fasta
+kallisto_index_1,kallisto,data/test/idx,
+kallisto_index_2,kallisto,,data/test/transcriptome.fa.gz
+kallisto_index_3,kallisto,,https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/215/GCF_000001215.4_Release_6_plus_ISO1_MT/GCF_000001215.4_Release_6_plus_ISO1_MT_rna.fna.gz
+salmon_index_2,salmon,,data/test/transcriptome.fa.gz

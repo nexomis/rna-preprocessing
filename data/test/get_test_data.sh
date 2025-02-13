@@ -25,5 +25,9 @@ rm k2_minusb_20240112.tar.gz
 
 wget -q https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/215/GCF_000001215.4_Release_6_plus_ISO1_MT/GCF_000001215.4_Release_6_plus_ISO1_MT_rna.fna.gz
 mv GCF_000001215.4_Release_6_plus_ISO1_MT_rna.fna.gz transcriptome.fa.gz
+
+# Create kallisto index
 apptainer run docker://quay.io/biocontainers/kallisto:0.50.1--h6de1650_2 kallisto index -i idx transcriptome.fa.gz
 
+# Create salmon index
+# apptainer run docker://quay.io/biocontainers/salmon:1.10.3--haf24da9_3 salmon index -t transcriptome.fa.gz -i salmon_idx

@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/nexomis/rna-preprocessing/main/assets/reference_schema.json",
+  "title": "Reference metadata",
+  "description": "Metadata for RNA quantification references (Kallisto or Salmon)",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9_]+$",
+        "description": "Unique identifier for the reference"
+      },
+      "method": {
+        "type": "string",
+        "enum": ["kallisto", "salmon"],
+        "description": "Quantification method to use"
+      },
+      "index": {
+        "type": "string",
+        "format": "file-path",
+        "description": "Path to an existing index (kallisto or salmon)"
+      },
+      "fasta": {
+        "type": "string",
+        "format": "file-path",
+        "description": "Path to the FASTA file used to build the index"
+      }
+    },
+    "oneOf": [
+      {
+        "required": ["id", "method", "index"]
+      },
+      {
+        "required": ["id", "method", "fasta"]
+      }
+    ]
+  }
+}
