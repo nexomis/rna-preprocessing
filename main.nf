@@ -218,9 +218,7 @@ workflow {
     .concat(SALMON_INDEX.out.idx)
     .concat(referenceBranched.existing)
 
-  multiqcYml = Channel.fromPath(projectDir + "/files/align_multiqc.yml")
-
-  RNA_PREPROCESSING(inputsForQuant, referenceIndexFinal, multiqcYml)
+  RNA_PREPROCESSING(inputsForQuant, referenceIndexFinal)
 
   publish:
   PRIMARY.out.trimmed                         >> 'trimmed_and_filtered'
