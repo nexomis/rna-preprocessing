@@ -47,14 +47,31 @@ def parse_sample_entry(it) {
 def parse_reference(it) {
   def is_index = false
   def is_fasta = false
+  def is_multi_fasta = false
   def ref_file
+  def fasta_files = []
+  
   if (it[2] && !it[2].isEmpty()) {
     ref_file = file(it[2], checkIfExists: true)
     is_index = true
   } else if (it[3] && !it[3].isEmpty()) {
-    ref_file = file(it[3], checkIfExists: true)
-    is_fasta = true
+    // Check if fasta field contains semicolons (multiple files)
+    if (it[3].contains(';')) {
+      is_multi_fasta = true
+      is_fasta = true
+      // Split by semicolon and check if each file exists
+      def fasta_paths = it[3].split(';')
+      fasta_paths.each { path ->
+        def f = file(path.trim(), checkIfExists: true)
+        fasta_files << f
+      }
+      ref_file = fasta_files
+    } else {
+      ref_file = file(it[3], checkIfExists: true)
+      is_fasta = true
+    }
   }
+  
   // raise error if ref_file is not defined
   if (!ref_file) {
     throw new IllegalArgumentException("Reference file is not defined for ${it[0]} / ${it[1]} / ${it[2]} / ${it[3]}")
@@ -64,7 +81,8 @@ def parse_reference(it) {
     "id": it[0], 
     "method": it[1],
     "is_index": is_index, 
-    "is_fasta": is_fasta
+    "is_fasta": is_fasta,
+    "is_multi_fasta": is_multi_fasta
   ]
   return [meta, ref_file]
 }
@@ -142,6 +160,7 @@ include { PRIMARY } from './modules/subworkflows/primary/main.nf'
 include { RNA_PREPROCESSING } from './modules/subworkflows/rna_preprocessing/main.nf'
 include { KALLISTO_INDEX } from './modules/process/kallisto/index/main.nf'
 include { SALMON_INDEX } from './modules/process/salmon/index/main.nf'
+include { CONCAT_FILES } from './modules/process/concat_files/main.nf'
 
 workflow {
   // START PARSING SAMPLE SHEET
@@ -205,6 +224,23 @@ workflow {
   | set { referenceBranched }
 
   referenceBranched.build
+  | branch {
+    single: !it[0].is_multi_fasta
+    multiple: it[0].is_multi_fasta
+  }
+  | set { refBuildBranched }
+
+  // Concatenate multiple FASTA files if needed
+  CONCAT_FILES(refBuildBranched.multiple)
+  
+  // Combine single and concatenated FASTA files
+  singleFastaFiles = refBuildBranched.single
+  concatenatedFastaFiles = CONCAT_FILES.out.fasta
+  
+  allFastaFiles = singleFastaFiles.concat(concatenatedFastaFiles)
+  
+  // Branch by method
+  allFastaFiles
   | branch {
     kallisto: it[0].method == 'kallisto'
     salmon: it[0].method == 'salmon'

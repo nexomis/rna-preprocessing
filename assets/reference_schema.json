@@ -24,8 +24,7 @@
       },
       "fasta": {
         "type": "string",
-        "format": "file-path",
-        "description": "Path to the FASTA file used to build the index"
+        "description": "Semicolon-separated list of paths to multiple FASTA files that will be concatenated to build the index"
       }
     },
     "oneOf": [

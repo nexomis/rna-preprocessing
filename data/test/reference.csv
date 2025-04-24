@@ -1,5 +1,5 @@
 id,method,index,fasta
 kallisto_index_1,kallisto,data/test/idx,
 kallisto_index_2,kallisto,,data/test/transcriptome.fa.gz
-kallisto_index_3,kallisto,,https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/215/GCF_000001215.4_Release_6_plus_ISO1_MT/GCF_000001215.4_Release_6_plus_ISO1_MT_rna.fna.gz
+kallisto_index_3,kallisto,,https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/215/GCF_000001215.4_Release_6_plus_ISO1_MT/GCF_000001215.4_Release_6_plus_ISO1_MT_rna.fna.gz;https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/865/725/GCF_000865725.1_ViralMultiSegProj15521/GCF_000865725.1_ViralMultiSegProj15521_genomic.fna.gz
 salmon_index_2,salmon,,data/test/transcriptome.fa.gz
