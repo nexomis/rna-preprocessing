@@ -2,4 +2,4 @@ input: data/test/samplesheet.csv
 out_dir: data/test/out
 reference: data/test/reference.csv
 min_len: 31
-kraken2_db: data/test/k2_minusb_20240112
+kraken2_db: https://genome-idx.s3.amazonaws.com/kraken/k2_viral_20250402.tar.gz

@@ -92,9 +92,8 @@
             "properties": {
                 "kraken2_db": {
                     "type": "string",
-                    "format": "directory-path",
-                    "exists": true, 
-                    "description": "Kraken2 index as a directory"
+                    "exists": true,
+                    "description": "Path to the Kraken2 database directory or a compressed archive (.tar.gz, .tar.bz2, .tar)."
                 },
                 "num_reads_sample_qc": {
                     "type": "integer",

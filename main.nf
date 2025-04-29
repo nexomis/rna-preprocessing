@@ -2,29 +2,6 @@
 nextflow.preview.output = true
 include { validateParameters; paramsHelp; paramsSummaryLog; fromSamplesheet } from 'plugin/nf-validation'
 
-log.info """
-    |            #################################################
-    |            #    _  _                             _         #
-    |            #   | \\| |  ___  __ __  ___   _ __   (_)  __    #
-    |            #   | .` | / -_) \\ \\ / / _ \\ | '  \\  | | (_-<   #
-    |            #   |_|\\_| \\___| /_\\_\\ \\___/ |_|_|_| |_| /__/   #
-    |            #                                               #
-    |            #################################################
-    |
-    | rna-preprocessing: Estimate the expression level of features (genes or transcripts) and perform the associated QC. Starting from cleaned reads and one pre-built reference database in standard format (cf. Readme.md).
-    | 
-    |""".stripMargin()
-
-if (params.help) {
-  log.info paramsHelp("nextflow run nexomis/rna-preprocessing --input </path/to/samplesheet> --reference </path/to/reference.csv> [args]")
-  exit 0
-}
-
-validateParameters()
-log.info paramsSummaryLog(workflow)
-
-file(params.out_dir + "/nextflow").mkdirs()
-
 def parse_sample_entry(it) {
   def type = "SR"
   def r1_file = file(it[1], checkIfExists: true)
@@ -161,8 +138,30 @@ include { RNA_PREPROCESSING } from './modules/subworkflows/rna_preprocessing/mai
 include { KALLISTO_INDEX } from './modules/process/kallisto/index/main.nf'
 include { SALMON_INDEX } from './modules/process/salmon/index/main.nf'
 include { CONCAT_FILES } from './modules/process/concat_files/main.nf'
+include { COMMIT_DIR } from './modules/process/commit_dir/main.nf'
 
 workflow {
+
+  log.info """
+    |            #################################################
+    |            #    _  _                             _         #
+    |            #   | \\| |  ___  __ __  ___   _ __   (_)  __    #
+    |            #   | .` | / -_) \\ \\ / / _ \\ | '  \\  | | (_-<   #
+    |            #   |_|\\_| \\___| /_\\_\\ \\___/ |_|_|_| |_| /__/   #
+    |            #                                               #
+    |            #################################################
+    |
+    | rna-preprocessing: Estimate the expression level of features (genes or transcripts) and perform the associated QC. Starting from cleaned reads and one pre-built reference database in standard format (cf. Readme.md).
+    | 
+    |""".stripMargin()
+
+  if (params.help) {
+    log.info paramsHelp("nextflow run nexomis/rna-preprocessing --input </path/to/samplesheet> --reference </path/to/reference.csv> [args]")
+    exit 0
+  }
+  validateParameters()
+  log.info paramsSummaryLog(workflow)
+
   // START PARSING SAMPLE SHEET
   Channel.fromSamplesheet("input")
   | map {
@@ -178,16 +177,24 @@ workflow {
       error "kraken2_db argument required for primary analysis"
     }
 
-    Channel.fromPath(params.kraken2_db, type: "dir", checkIfExists: true)
-    | map {[["id": "kraken_db"], it]}
-    | collect
-    | set {dbPathKraken2}
-    
+    // Commit the kraken DB (directory or archive) to ensure it's a directory
+    Channel.value(params.kraken2_db)
+    | map { path ->
+        def meta = [ id: "kraken_db" ] // Simple meta for the single DB item
+        def input_item = file(path) // Let Nextflow stage the file/dir
+        if (!input_item.exists()) {
+            error "Provided kraken2_db path does not exist: ${path}"
+        }
+        return [ meta, input_item ]
+      }
+    | COMMIT_DIR
+    | set { committedKrakenDb } // Output is tuple [meta, path_to_dir]
+
     taxDir = Channel.fromPath(params.tax_dir, type: 'dir', checkIfExists: true)
     numReads = Channel.value(params.num_reads_sample_qc)
 
-    PRIMARY(rawInputs, dbPathKraken2, taxDir, numReads)
-    
+    PRIMARY(rawInputs, committedKrakenDb, taxDir, numReads)
+
     trimmedInputs = PRIMARY.out.trimmed
   }
   // END PRIMARY
