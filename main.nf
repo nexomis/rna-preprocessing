@@ -269,6 +269,7 @@ workflow {
   PRIMARY.out.fastqc_raw_html                 >> 'fastqc_raw'
   PRIMARY.out.multiqc_html                    >> 'multiqc'
   RNA_PREPROCESSING.out.kallisto_h5           >> 'kallisto'
+  RNA_PREPROCESSING.out.kallisto_log           >> 'kallisto'
   RNA_PREPROCESSING.out.salmon_quant          >> 'salmon'
   RNA_PREPROCESSING.out.multiqc               >> 'align_multiqc'
 }

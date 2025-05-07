@@ -1,0 +1,5 @@
+input: data/test/samplesheet_ena.csv
+out_dir: data/test/out_ena
+reference: data/test/reference_ena.csv
+min_len: 31
+kraken2_db: data/test/k2_minusb_20240112

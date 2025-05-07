@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nexomis/DE-Preprocessing/master/nextflow_schema.json",
+    "$id": "https://raw.githubusercontent.com/nexomis/rna-preprocessing/master/nextflow_schema.json",
     "title": "nexomis/rna-preprocessing pipeline parameters",
     "description": "Estimate the expression level of features (genes or transcripts) and perform the associated QC. Starting from cleaned reads and one pre-built reference database in standard format (cf. Readme.md).",
     "type": "object",
@@ -162,7 +162,7 @@
                 },
                 "kraken2_memory": {
                     "type": "integer",
-                    "default": 10,
+                    "default": 12,
                     "description": "Amount of memory in GB for Kraken2, default is 12 GB"
                 }
             }
