@@ -19,9 +19,9 @@
                     "schema": "assets/input_schema.json",
                     "description": "Path to comma-separated file containing information about the samples you would like to analyse. Reference ID is required in the input schema"
                 },
-                "save_fastp": {
+                "save_trimmed_reads": {
                     "type": "boolean",
-                    "description": "Save fastp trimmed fastq.",
+                    "description": "Save cutadapt trimmed fastq files.",
                     "default": false
                 },
                 "skip_primary": {
@@ -38,50 +38,35 @@
                 }
             }
         },
-        "fastp_options": {
-            "title": "fastp options for Primary analysis",
+        "cutadapt_options": {
+            "title": "Cutadapt Options for Primary Analysis",
             "type": "object",
-            "description": "Options for the fastp software.",
+            "description": "Default options for the Cutadapt software. These can be overridden by samplesheet entries.",
             "properties": {
-                "trim_poly_g": {
+                "enforce_nextseq_trim": {
                     "type": "boolean",
-                    "description": "Enable polyG tail trimming.",
+                    "description": "Use NextSeq-specific quality trimming (--nextseq-trim) instead of standard quality trimming (-q).",
                     "default": true
                 },
-                "trim_poly_x": {
-                    "type": "boolean",
-                    "description": "Enable polyX tail trimming.",
-                    "default": true
-                },
-                "min_avg_qual": {
+                "min_qual": {
                     "type": "integer",
-                    "description": "Minimum average quality to keep a read.",
+                    "description": "Quality cutoff for trimming. Used with --nextseq-trim or -q.",
                     "default": 28
                 },
                 "min_len": {
                     "type": "integer",
-                    "description": "Minimum length to keep a read.",
-                    "default": 41
+                    "description": "Minimum length to keep a read after trimming (-m).",
+                    "default": 31
                 },
-                "cut_right_window_size": {
-                    "type": "integer",
-                    "description": "The window size for sliding window trimming on the right.",
-                    "default": 4
+                "adapter_r1": {
+                    "type": "string",
+                    "description": "Default R1 adapter sequence (-a).",
+                    "default": ""
                 },
-                "cut_right_mean_qual": {
-                    "type": "integer",
-                    "description": "The mean quality requirement for sliding window trimming on the right.",
-                    "default": 20
-                },
-                "cut_tail_window_size": {
-                    "type": "integer",
-                    "description": "The window size for sliding window trimming on the tail.",
-                    "default": 4
-                },
-                "cut_tail_mean_qual": {
-                    "type": "integer",
-                    "description": "The mean quality requirement for sliding window trimming on the tail.",
-                    "default": 25
+                "adapter_r2": {
+                    "type": "string",
+                    "description": "Default R2 adapter sequence (-A). Empty if not applicable.",
+                    "default": ""
                 }
             }
         },
@@ -172,7 +157,7 @@
         { "$ref": "#/definitions/input_output_options" },
         { "$ref": "#/definitions/quantification" },
         { "$ref": "#/definitions/resources_options" },
-        { "$ref": "#/definitions/fastp_options" },
+        { "$ref": "#/definitions/cutadapt_options" },
         { "$ref": "#/definitions/primary_opts" }
     ]
 }

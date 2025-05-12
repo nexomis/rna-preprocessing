@@ -2,23 +2,70 @@
 nextflow.preview.output = true
 include { validateParameters; paramsHelp; paramsSummaryLog; fromSamplesheet } from 'plugin/nf-validation'
 
+
+
 def parse_sample_entry(it) {
-  def type = "SR"
-  def r1_file = file(it[1], checkIfExists: true)
-  def files = [r1_file]
-  if (it[2] && !it[2].isEmpty() ) {
-    def r2_file = file(it[2], checkIfExists: true)
-    files << r2_file
-    type = "PE"
-  }
-  if (r1_file.toString().toLowerCase().endsWith("sfq")) {
-    type = "sfq"
-  }
-  def meta = ["id": it[0], "reference": it[3],
-      "strand": it[4], "is_3prime": it[5],
-      "frag_size": it[6],"frag_size_sd": it[7], "read_type": type
+    // Define the order of fields as per assets/input_schema.json
+    def field_names = [
+        "sample_name", "path_r1", "path_r2", "reference", "strand",
+        "is_3prime", "frag_size", "frag_size_sd", "r1_adapter",
+        "r2_adapter", "trim_poly_a", "args_cutadapt"
     ]
-  return [meta, files]
+
+    // Create a map from the input list 'it'
+    def dit = [:]
+    field_names.eachWithIndex { field_name, index ->
+        if (index < it.size()) {
+            dit[field_name] = it[index]
+        } else {
+            // Handle cases where optional fields might be missing at the end of the list
+            // Or use default values from schema if necessary (more complex)
+            dit[field_name] = null // Or some default
+        }
+    }
+
+    def type = "SR"
+    def r1_file = file(dit.path_r1, checkIfExists: true)
+    def files = [r1_file]
+    if (dit.path_r2 && !dit.path_r2.isEmpty()) {
+        def r2_file = file(dit.path_r2, checkIfExists: true)
+        files << r2_file
+        type = "PE"
+    }
+    if (r1_file.toString().toLowerCase().endsWith("sfq")) {
+        type = "sfq"
+    }
+
+    def meta = [
+        "id"            : dit.sample_name,
+        "reference"     : dit.reference,
+        "strand"        : dit.strand,
+        "is_3prime"     : dit.is_3prime as boolean,
+        "frag_size"     : dit.frag_size as double,
+        "frag_size_sd"  : dit.frag_size_sd as double,
+        "read_type"     : type
+    ]
+
+    // Cutadapt specific meta construction
+    def cutadapt_sample_args_list = []
+    if (dit.r1_adapter && !dit.r1_adapter.isEmpty()) {
+        cutadapt_sample_args_list.add("-a")
+        cutadapt_sample_args_list.add("\"${dit.r1_adapter}\"")
+    }
+    if (type == "PE" && dit.r2_adapter && !dit.r2_adapter.isEmpty()) {
+        cutadapt_sample_args_list.add("-A")
+        cutadapt_sample_args_list.add("\"${dit.r2_adapter}\"")
+    }
+    
+    boolean should_trim_poly_a = dit.containsKey('trim_poly_a') && dit.trim_poly_a != null ? (dit.trim_poly_a as boolean) : true
+    if (should_trim_poly_a) {
+        cutadapt_sample_args_list.add("--poly-a")
+    }
+  
+    meta.args_cutadapt = cutadapt_sample_args_list.join(" ").trim() + (dit.args_cutadapt ?: "")
+
+
+    return [meta, files]
 }
 
 def parse_reference(it) {
@@ -269,14 +316,14 @@ workflow {
   PRIMARY.out.fastqc_raw_html                 >> 'fastqc_raw'
   PRIMARY.out.multiqc_html                    >> 'multiqc'
   RNA_PREPROCESSING.out.kallisto_h5           >> 'kallisto'
-  RNA_PREPROCESSING.out.kallisto_log           >> 'kallisto'
+  RNA_PREPROCESSING.out.kallisto_log          >> 'kallisto'
   RNA_PREPROCESSING.out.salmon_quant          >> 'salmon'
   RNA_PREPROCESSING.out.multiqc               >> 'align_multiqc'
 }
 
 output {
   'trimmed_and_filtered' {
-    enabled params.save_fastp
+    enabled params.save_trimmed_reads
   }
   'fastqc_trim' {
     path 'qc/fastqc/trimmed'

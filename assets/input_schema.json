@@ -58,6 +58,26 @@
           "type": "number",
           "default": -1,
           "errorMessage": "Standard deviation of fragment size"
+        },
+        "r1_adapter": {
+          "type": "string",
+          "default": "",
+          "description": "Adapter sequence for R1. If provided, -a will be used with this value."
+        },
+        "r2_adapter": {
+          "type": "string",
+          "default": "",
+          "description": "Adapter sequence for R2 (for PE reads). If provided, -A will be used with this value."
+        },
+        "trim_poly_a": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable the second fastp step for polyX re-trimming."
+        },
+        "args_cutadapt": {
+          "type": "string",
+          "default": "",
+          "description": "Additional custom arguments for cutadapt."
         }
       },
       "required": ["sample_name", "path_r1", "reference"]
