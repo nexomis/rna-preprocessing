@@ -3,3 +3,4 @@ out_dir: data/test/out
 reference: data/test/reference.csv
 min_len: 31
 kraken2_db: data/test/k2_minusb_20240112
+adapter_r1: GATCGGAAGAGCACACGTCTGAACTCCAGTCAC

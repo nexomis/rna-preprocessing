@@ -50,11 +50,11 @@ def parse_sample_entry(it) {
     def cutadapt_sample_args_list = []
     if (dit.r1_adapter && !dit.r1_adapter.isEmpty()) {
         cutadapt_sample_args_list.add("-a")
-        cutadapt_sample_args_list.add("\"${dit.r1_adapter}\"")
+        cutadapt_sample_args_list.add("${dit.r1_adapter}")
     }
     if (type == "PE" && dit.r2_adapter && !dit.r2_adapter.isEmpty()) {
         cutadapt_sample_args_list.add("-A")
-        cutadapt_sample_args_list.add("\"${dit.r2_adapter}\"")
+        cutadapt_sample_args_list.add("${dit.r2_adapter}")
     }
     
     boolean should_trim_poly_a = dit.containsKey('trim_poly_a') && dit.trim_poly_a != null ? (dit.trim_poly_a as boolean) : true
